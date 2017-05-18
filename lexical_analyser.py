@@ -35,23 +35,24 @@ def t_error(t):
     t.lexer.skip(1)
 
 
+quantum_code = """
+    H(q2); //End of line comment
+    Cnot(q2, q3);
+    Cnot(q1, q2);
+    H(q1)
+    if (q1) then
+        if (q1) then skip else x(q3)
+    else
+        if (q2) then z(q3) else y(q3)
+
+"""
+
+lexer = ply.lex.lex()
+lexer.input(quantum_code)
+
+
 def main():
 
-    quantum_code = """
-        H(q2); //End of line comment
-        Cnot(q2, q3);
-        Cnot(q1, q2);
-        H(q1)
-        if (q1) then
-            if (q1) then skip else x(q3)
-        else
-            if (q2) then z(q3) else y(q3)
-
-    """
-
-    lexer = ply.lex.lex()
-    lexer.input(quantum_code)
-    #parser = ply.yacc.yacc()
     while True:
         tok = lexer.token()
         if not tok: break

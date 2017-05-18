@@ -25,8 +25,14 @@ class Quantum_Status:
                 qubit2 = step[2]
                 self.status = self.apply_two_qubit_operator(gate_to_apply, self.status, qubit1, qubit2)
             self.status = normalize(self.status)
+        elif isinstance(step, Sequence) and len(step) == 5 and step[0] == quantum_if:
+            measurement_basis = step[1]
+            qubit_to_measure = step[2]
+            if_instructions = step[3]
+            else_instructions = step[4]
+            self.status = self.apply_measurement(measurement_basis, self.status, qubit_to_measure, if_instructions, else_instructions)
         else:
-            print "Malformed Status. Expected (Gate, q1[, q2]) collection."
+            print "Malformed Status. Expected (Gate, q1[, q2])* or (quantum_if, measurement_basis, qubit_to_measure, if_block, else_block). Received: ", step
         pass
 
     #Traverse recursively the tree Assumes tree is "normalized"
@@ -80,6 +86,16 @@ class Quantum_Status:
         else:
             return status_tree # it was an end Symbol (ex, a number)
 
+
+
+    def apply_measurement(self, measurement_base, status_tree, qubit_to_measure, if_instructions, else_instructions):
+        if isinstance(status_tree, tensor_product):
+            previous_children = status_tree.args
+            new_children = previous_children[:qubit_to_measure] + (measurement_base, ) + previous_children[qubit_to_measure + 1:]
+            return tensor_product(*new_children)
+        else:
+            recursive_apply = [self.apply_measurement(measurement_base, x, qubit_to_measure, if_instructions, else_instructions) for x in status_tree.args]
+            return status_tree.func(*recursive_apply)
 
     def __str__(self):
         return str(self.status) + "\t\t\t\t\t\t===TREE(" + srepr(self.status) + "==="

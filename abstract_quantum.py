@@ -34,16 +34,18 @@ def apply_step(step, status, asociations):
         status[first_qubit_afected], status[second_qubit_afected] = \
             calculate_two_qubit_evolution(asociations.get(gate_to_apply), status[first_qubit_afected], status[second_qubit_afected])
     else:
-        print "Malformed Status"
+        print "Malformed Input"
 
 
 def execute(initial_status, associations, quantum_program):
+    bold = "\033[1m"
+    reset = "\033[0;0m"
     status_count = 0
     status = Quantum_Status(initial_status, associations)
-    print "Initial Status:", status
+    print bold, "(Initial Status):", reset, status
     for step in quantum_program:
         status.apply_step(step)
-        print step, "->", status
+        print bold, step, "->", reset, status
     # status = initial_status
     # print "Status ", status_count, ":", status
     # for step in quantum_program:
