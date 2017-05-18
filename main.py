@@ -100,7 +100,7 @@ def main():
     abstract_quantum.execute(initial_status, associations, quantum_program)
 
     ###### THE SAME BEING DONE WITH A COMPILER #####
-    #End of statements by new line
+    #Now, end of statements semicolon. Why not by new line?
     initial_status_string = "i, -y, i"
 
     quantum_code = """

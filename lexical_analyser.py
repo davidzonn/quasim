@@ -12,11 +12,18 @@ tokens = [
             'GATE',
             'NO_INSTRUCTION',
             'EQUAL',
-            'IDENTIFIER'
+            'IDENTIFIER',
+            'NUMBER',
+            'QUBITEXPRESSION'
           ] + list(reserved.values())
 
 t_ignore = ' \t' #Ignore Tab or space
 literals = ['+', '-', '/', '*', ',', ';', '(', ')'] #Returned with no modification
+
+def t_QUBITEXPRESSION(t):
+    r'q\d+' #One 'q' followed by a number.
+    t.value = int(t.value[1]) #Remove the q for the program.
+    return t
 
 def t_COMMENT(t):
     r'\/\/.*' #no return, it gets ignored
@@ -34,6 +41,10 @@ def t_error(t):
     print("Warning: Illegal character '%s' skipped" % t.value[0])
     t.lexer.skip(1)
 
+def t_NUMBER(t):
+    r'\d+'
+    t.value = int(t.value)
+    return t
 
 quantum_code = """
     H(q2); //End of line comment
