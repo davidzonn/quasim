@@ -14,43 +14,47 @@ def p_command_skip (p):
     '''
         command : SKIP
     '''
-    p[0] = p[1]
+    p[0] = AST(p[1])
 
 def p_command_multiplecommands (p):
     '''
         command : command ';' command
     '''
-    p[0] = AST("Statement Sequence", p[1], p[3])
+    command_name = "sequence"
+    if (p[3].name == command_name):
+        p[0] = AST(command_name, p[1], *p[3])
+    else:
+        p[0] = AST(command_name, p[1], p[3])
 
 def p_command_gate (p):
     '''
         command : IDENTIFIER '(' args ')'
     '''
-    p[0] = AST("Gate", p[1] , p[3])
+    p[0] = AST(p[1] , p[3])
 
 def p_command_if (p):
     '''
         command : IF QUBITEXPRESSION THEN command ELSE command
     '''
-    p[0] = AST(p[1])
+    p[0] = AST(p[1], p[2], p[4], p[6])
 
 def p_args_single (p):
     '''
         args : QUBITEXPRESSION 
     '''
-    p[0] = p[1]
+    p[0] = AST(p[1])
 
 def p_args_list (p):
     '''
          args : QUBITEXPRESSION ',' args
     '''
-    p[0] = (p[1], p[3])
+    p[0] = AST(p[1], p[3])
 
 def main():
 
     quantum_code = """
-        H(q2); //End of line comment
-        Cnot(q2, q3);
+        H(q2);
+        CNot(q2, q3);
         Cnot(q1, q2);
         H(q1);
         if q1 then

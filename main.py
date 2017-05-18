@@ -108,10 +108,10 @@ def main():
         CNot(q2, q3);
         Cnot(q1, q2);
         H(q1);
-        if (q1) then
-            if (q1) then skip; else x(q3);
+        if q1 then
+            if q1 then skip; else x(q3);
         else
-            if (q2) then z(q3) else y(q3);
+            if q2 then z(q3) else y(q3);
     """
 
     execute_random_program()
