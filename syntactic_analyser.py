@@ -6,6 +6,7 @@ from abstract_syntax_tree import AST
 
 from lexical_analyser import tokens
 
+
 def p_error(p):
     print("Syntax error in input!")
 
@@ -30,7 +31,7 @@ def p_command_gate (p):
     '''
         command : IDENTIFIER '(' args ')'
     '''
-    p[0] = AST(p[1] , p[3])
+    p[0] = AST(p[1] , *p[3])
 
 def p_command_if (p):
     '''
@@ -42,13 +43,15 @@ def p_args_single (p):
     '''
         args : QUBITEXPRESSION 
     '''
-    p[0] = AST(p[1])
+    p[0] = [p[1]]
 
 def p_args_list (p):
     '''
          args : QUBITEXPRESSION ',' args
     '''
-    p[0] = AST(p[1], p[3])
+    p[0] = [p[1]] + p[3]
+
+quantum_parser = ply.yacc.yacc()
 
 def main():
 
@@ -63,17 +66,15 @@ def main():
             if q2 then z(q3) else y(q3)
     """
 
-
-    lexical_analyser.lexer.input(quantum_code)
+    parsing_result =  quantum_parser.parse(quantum_code)
+    print parsing_result
+    #lexical_analyser.lexer.input(quantum_code)
     # while True:
     #     tok = lexical_analyser.lexer.token()
     #     if not tok: break
     #     print tok.type
 
 
-    parser = ply.yacc.yacc()
-    parsed_tokens = parser.parse(quantum_code)
-    print parsed_tokens
 
 
 if __name__ == "__main__":

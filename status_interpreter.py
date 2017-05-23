@@ -12,6 +12,13 @@ def apply_transformation(tree):
             children = tree.args
             i = 0
             for child in children:
+
+                # if isinstance(child, constants.nought or child == constants.nought):
+                #     tensor_children = children[:i] + children[i+1:]
+                #     tree = constants.tensor_product(*tensor_children)
+                #     modifications = True
+                #     break
+
                 if isinstance (child, sympy.Mul):
                     tree_children = list()
                     numerical_children = list()

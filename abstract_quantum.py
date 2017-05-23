@@ -37,18 +37,29 @@ def apply_step(step, status, asociations):
         print "Malformed Input"
 
 
+bold = "\033[1m"
+endbold = "\033[0;0m"
+
 def execute(initial_status, associations, quantum_program):
-    bold = "\033[1m"
-    reset = "\033[0;0m"
     status_count = 0
     status = Quantum_Status(initial_status, associations)
-    print bold, "(Initial Status):", reset, status
+    print bold, "(Initial Status):", endbold, status
     for step in quantum_program:
         status.apply_step(step)
-        print bold, step, "->", reset, status
+        print bold, step, "->", endbold, status
     # status = initial_status
     # print "Status ", status_count, ":", status
     # for step in quantum_program:
     #     apply_step(step, status, associations)
     #     status_count += 1
     #     print "Status ", status_count,step,":", status
+
+
+def execute_AST(initial_status, associations, AST_quantum_program, if_associations):
+
+    status = Quantum_Status(initial_status, associations, if_associations)
+
+    print bold, "(Initial Status):", endbold, status
+    for step in AST_quantum_program:
+        status.apply_AST_step(step)
+        print bold, step, "->", endbold, status

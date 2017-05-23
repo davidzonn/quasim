@@ -6,6 +6,8 @@ import abstract_quantum
 import sympy
 from itertools import chain
 import constants
+from constants import sqrt2
+from syntactic_analyser import quantum_parser
 
 # Declaraion of valid status (exc. mixed)
 x = sympy.Symbol('X')
@@ -17,13 +19,13 @@ skip = sympy.Symbol("Skip")
 # Declaration of valid gates
 h = sympy.Symbol('H')
 t = sympy.Symbol('T')
-cnot = sympy.Symbol('CNOT')
+cnot = sympy.Symbol('CNot')
 
 # The quantum abstract domain associations
 associations = {
     t: {
-        x: (x + y) / constants.sqrt2,
-        y: (y - x),
+        x: (x + y) / sqrt2,
+        y: (y - x) / sqrt2,
         z: z,
         i: i
     },
@@ -37,16 +39,19 @@ associations = {
         x: x,
         y: -y,
         z: -z,
+        i: i
     },
     y: {
         x: -x,
         y: y,
-        z: -z
+        z: -z,
+        i: i
     },
     z: {
         x: -x,
         y: -y,
-        z: z
+        z: z,
+        i: i
     },
     cnot: {
         (x, x): (x, i),
@@ -68,6 +73,20 @@ associations = {
     }
 }
 
+if_associations = {
+    True: {
+        i: (i + z)/2,
+        x: constants.measured,
+        y: constants.measured,
+        z: (i + z)/2
+    },
+    False: {
+        i: (i - z)/2,
+        x: constants.measured,
+        y: constants.measured,
+        z: (z - i)/2
+    }
+}
 
 def execute_random_program():
     #generation of a random initial configuration
@@ -89,32 +108,57 @@ def execute_random_program():
     abstract_quantum.execute(random_status, associations, random_program)
 
 
-def main():
-
-    #The initial configuration of our qubits
+def execute_parsed_program():
     initial_status = [x]
-
-
-    #The Program to be executed over our qubits (right first)
     quantum_program = ((t, 0), (t, 0))
     abstract_quantum.execute(initial_status, associations, quantum_program)
 
-    ###### THE SAME BEING DONE WITH A COMPILER #####
-    #Now, end of statements semicolon. Why not by new line?
-    initial_status_string = "i, -y, i"
+
+def execute_compiler():
+
+    initial_status = [z, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
 
     quantum_code = """
         H(q2);
         CNot(q2, q3);
-        Cnot(q1, q2);
+        CNot(q1, q2);
         H(q1);
         if q1 then
-            if q1 then skip; else x(q3);
+            if q2 then skip else X(q3)
         else
-            if q2 then z(q3) else y(q3);
+            if q2 then Z(q3) else Y(q3)
     """
 
-    execute_random_program()
+
+    # initial_status = [x]
+    #
+    # provisional_quantum_code = """
+    #     status = { x, z + y / sqrt(2), z }
+    #     program = {
+    #         T(q1);
+    #         T(q1)
+    #     }
+    # """
+    #
+    # quantum_code = """
+    #     T(q1);
+    #     T(q1)
+    # """
+
+    # quantum_code = """
+    #     T(q1)
+    # """
+    parsed_input = quantum_parser.parse(quantum_code)
+    print parsed_input
+
+    abstract_quantum.execute_AST(initial_status, associations, parsed_input, if_associations)
+
+
+def main():
+
+    # execute_parsed_program()
+    execute_compiler()
+    # execute_random_program()
 
 if __name__ == "__main__":
     main()

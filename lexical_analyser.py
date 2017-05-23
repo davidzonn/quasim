@@ -9,11 +9,7 @@ reserved = {
             }
 
 tokens = [
-            'GATE',
-            'NO_INSTRUCTION',
-            'EQUAL',
             'IDENTIFIER',
-            'NUMBER',
             'QUBITEXPRESSION'
           ] + list(reserved.values())
 
@@ -22,7 +18,7 @@ literals = ['+', '-', '/', '*', ',', ';', '(', ')'] #Returned with no modificati
 
 def t_QUBITEXPRESSION(t):
     r'q\d+' #One 'q' followed by a number.
-    t.value = int(t.value[1]) #Remove the q for the program.
+    t.value = int(t.value[1]) - 1 #Remove the q for the program, standarize by removing one.
     return t
 
 def t_COMMENT(t):
@@ -41,29 +37,26 @@ def t_error(t):
     print("Warning: Illegal character '%s' skipped" % t.value[0])
     t.lexer.skip(1)
 
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)
-    return t
 
-quantum_code = """
-    H(q2); //End of line comment
-    Cnot(q2, q3);
-    Cnot(q1, q2);
-    H(q1)
-    if (q1) then
-        if (q1) then skip else x(q3)
-    else
-        if (q2) then z(q3) else y(q3)
-
-"""
 
 lexer = ply.lex.lex()
-lexer.input(quantum_code)
 
 
 def main():
 
+    quantum_code = """
+        H(q2); //End of line comment
+        Cnot(q2, q3);
+        Cnot(q1, q2);
+        H(q1)
+        if (q1) then
+            if (q1) then skip else x(q3)
+        else
+            if (q2) then z(q3) else y(q3)
+
+    """
+
+    lexer.input(quantum_code)
     while True:
         tok = lexer.token()
         if not tok: break
