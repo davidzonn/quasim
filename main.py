@@ -2,6 +2,7 @@
 #http://docs.sympy.org/dev/tutorial/manipulation.html
 #H, CNOT, because they transform Pauli operators into other Pauli operators, are Clifford
 import random
+import program_interpreter
 import abstract_quantum
 import sympy
 from itertools import chain
@@ -88,35 +89,12 @@ if_associations = {
     }
 }
 
-def execute_random_program():
-    #generation of a random initial configuration
-    number_of_qubits = 5
-    number_of_steps = 15
-
-    possible_initial_status = (x, y, z)
-    possible_initial_programs = chain(((h, i) for i in range(0, number_of_qubits)), ((t, i) for i in range(0, number_of_qubits)),
-                                   ((cnot, i, j) for i in range(0, number_of_qubits) for j in range(0, number_of_qubits) if i != j and abs(i-j) == 1))
-    random_status = list()
-#    print [(cnot, i, j) for i in range(0, number_of_qubits) for j in range(0, number_of_qubits) if i != j]
-    for i in range(0,number_of_qubits):
-        random_status.append(random.choice(possible_initial_status))
-    random_program = []
-    possible_initial_programs = list(possible_initial_programs)
-    for i in range(0,number_of_steps):
-        random_choice = random.choice(possible_initial_programs)
-        random_program.append(random_choice)
-    abstract_quantum.execute(random_status, associations, random_program)
-
-
-def execute_parsed_program():
-    initial_status = [x]
-    quantum_program = ((t, 0), (t, 0))
-    abstract_quantum.execute(initial_status, associations, quantum_program)
-
 
 def execute_compiler():
 
-    initial_status = [z, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
+    # initial_status = [x, z, z]
+
+    initial_status = [x, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
 
     quantum_code = """
         H(q2);
@@ -129,17 +107,17 @@ def execute_compiler():
             if q2 then Z(q3) else Y(q3)
     """
 
+    # initial_status = [x + z]
+    #
+    # quantum_code = """
+    #     if q1 then
+    #         skip
+    #     else
+    #         skip
+    # """
 
     # initial_status = [x]
-    #
-    # provisional_quantum_code = """
-    #     status = { x, z + y / sqrt(2), z }
-    #     program = {
-    #         T(q1);
-    #         T(q1)
-    #     }
-    # """
-    #
+
     # quantum_code = """
     #     T(q1);
     #     T(q1)
@@ -151,8 +129,34 @@ def execute_compiler():
     parsed_input = quantum_parser.parse(quantum_code)
     print parsed_input
 
-    abstract_quantum.execute_AST(initial_status, associations, parsed_input, if_associations)
+    program_interpreter.Quantum_Interpreter(initial_status, associations, parsed_input, if_associations)
 
+
+# def execute_random_program():
+#     #generation of a random initial configuration
+#     number_of_qubits = 5
+#     number_of_steps = 15
+#
+#     possible_initial_status = (x, y, z)
+#     possible_initial_programs = chain(((h, i) for i in range(0, number_of_qubits)), ((t, i) for i in range(0, number_of_qubits)),
+#                                    ((cnot, i, j) for i in range(0, number_of_qubits) for j in range(0, number_of_qubits) if i != j and abs(i-j) == 1))
+#     random_status = list()
+# #    print [(cnot, i, j) for i in range(0, number_of_qubits) for j in range(0, number_of_qubits) if i != j]
+#     for i in range(0,number_of_qubits):
+#         random_status.append(random.choice(possible_initial_status))
+#     random_program = []
+#     possible_initial_programs = list(possible_initial_programs)
+#
+#     for i in range(0,number_of_steps):
+#         random_choice = random.choice(possible_initial_programs)
+#         random_program.append(random_choice)
+#     abstract_quantum.execute(random_status, associations, random_program)
+#
+#
+# def execute_parsed_program():
+#     initial_status = [x]
+#     quantum_program = ((t, 0), (t, 0))
+#     abstract_quantum.execute(initial_status, associations, quantum_program)
 
 def main():
 

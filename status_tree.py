@@ -110,37 +110,3 @@ class Quantum_Status:
     def __str__(self):
         return str(self.status)# + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t===TREE(" + srepr(self.status) + "==="
 
-    def calculate_new_status(self, step, status):
-
-        function_to_apply = step.name
-        gate = Symbol(function_to_apply)
-        args = step.children
-
-        if function_to_apply == 'if':  # If Statement
-            new_status = self.ifthenelse(status, args[0], args[1], args[2])
-        elif function_to_apply == 'skip':
-            new_status = status
-        elif gate in self.associations:
-            number_of_arguments = len(args)
-            if number_of_arguments == 1:
-                new_status = self.apply_one_qubit_operator(gate, status, args[0])
-            elif number_of_arguments == 2:
-                new_status = self.apply_two_qubit_operator(gate, status, args[0], args[1])
-            new_status = normalize(new_status)
-        else:
-            print "WARNING: Unknown function " + function_to_apply + ". Skipping. " \
-                  + "Try with " + str([x for x in self.associations])
-            new_status = status
-        return new_status
-
-    def apply_AST_step(self, step):
-        self.status = self.calculate_new_status(step, self.status)
-
-
-    def ifthenelse(self, status_tree, qubit, if_instructions, else_instructions):
-        true_status = normalize(self.apply_one_qubit_operator(True, status_tree, qubit))
-        true_application = self.calculate_new_status(if_instructions, true_status)
-        false_status = normalize(self.apply_one_qubit_operator(False, status_tree, qubit))
-        false_application = self.calculate_new_status(else_instructions, false_status)
-        print "TRUE MEASSUREMENT ", true_status, ";\t\tTRUE APPLICATION ", true_application, ";\t\tFALSE MEASSUREMENT", false_application, ";\t\tFALSE APPLICATION", false_application
-        return sympy.Add(true_application,false_application)
