@@ -62,5 +62,5 @@ def normalize(tree):
     #print "BEFORE SYMPY", transformed_status[1]
     transformed_status[1] = sympy.simplify(transformed_status[1])
     #print "AFTER SYMPY", transformed_status[1]
-    return transformed_status[1]
+    return sympy.expand(transformed_status[1])
 

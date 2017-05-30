@@ -69,18 +69,20 @@ class Quantum_Interpreter:
         return new_status
 
     def ifthenelse(self, status_tree, qubit, if_instructions, else_instructions):
-        # true_status = normalize(self.status.apply_one_qubit_operator(True, status_tree, qubit))
-        # true_application = self.status.calculate_new_status(if_instructions, true_status)
-        # false_status = normalize(self.status.apply_one_qubit_operator(False, status_tree, qubit))
-        # false_application = self.status.calculate_new_status(else_instructions, false_status)
-        # #print "TRUE MEASSUREMENT ", true_status, ";\t\tTRUE APPLICATION ", true_application, ";\t\tFALSE MEASSUREMENT", false_application, ";\t\tFALSE APPLICATION", false_application
-        # print "TRUE APPLICATION:\t\t", true_application
-        # print "FALSE APPLICATION:\t\t", false_application
-        # return sympy.Add(true_application,false_application)
+
+
+        # true_status = self.status.apply_one_qubit_operator(True, status_tree, qubit)
+        # false_status = self.status.apply_one_qubit_operator(False, status_tree, qubit)
+        # true_application = self.execute(if_instructions, true_status)
+        # false_application = self.execute(else_instructions, false_status)
+        # return normalize(sympy.Add(true_application, false_application))
+
+
 
         true_status = normalize(self.status.apply_one_qubit_operator(True, status_tree, qubit))
-        true_application = self.execute(if_instructions, true_status)
         false_status = normalize(self.status.apply_one_qubit_operator(False, status_tree, qubit))
-        false_application = self.execute(else_instructions, false_status)
-        # print "TRUE MEASSUREMENT ", true_status, ";\t\tTRUE APPLICATION ", true_application, ";\t\tFALSE MEASSUREMENT", false_application, ";\t\tFALSE APPLICATION", false_application
-        return sympy.Add(true_application, false_application)
+        # print "TRUE MEASSUREMENT ", true_status, ";\t\tFALSE MEASSUREMENT", false_status
+        true_application = normalize(self.execute(if_instructions, true_status))
+        false_application = normalize(self.execute(else_instructions, false_status))
+        # print "TRUE APPLICATION ", true_application, "\t\tFALSE APPLICATION", false_application
+        return normalize(sympy.Add(true_application, false_application))

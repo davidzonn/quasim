@@ -94,7 +94,7 @@ def execute_compiler():
 
     # initial_status = [x, z, z]
 
-    initial_status = [x, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
+    initial_status = [(i+z)/2, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
 
     quantum_code = """
         H(q2);
@@ -107,20 +107,29 @@ def execute_compiler():
             if q2 then Z(q3) else Y(q3)
     """
 
-    # initial_status = [x + z]
+
+    # initial_status = [x]
+    # quantum_code = """
+    #     T(q1);
+    #     T(q1)
+    # """
+
+    # initial_status = [(z+i)/2, (i+x)/2]
+    #
+    # quantum_code = """
+    #     if q1 then
+    #         T(q2); T(q2)
+    #     else
+    #         skip; T(q2); X(q1); Y(q2); X(q1); X(q1)
+    # """
+
+    # initial_status = [(i+x)/2]
     #
     # quantum_code = """
     #     if q1 then
     #         skip
     #     else
     #         skip
-    # """
-
-    # initial_status = [x]
-
-    # quantum_code = """
-    #     T(q1);
-    #     T(q1)
     # """
 
     # quantum_code = """
