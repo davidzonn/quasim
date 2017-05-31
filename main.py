@@ -103,9 +103,12 @@ def execute_compiler():
         H(q1);
         if q1 then
             if q2 then skip else X(q3)
-        else
-            if q2 then Z(q3) else Y(q3)
     """
+
+    # quantum_code = """
+    #     if q1 then
+    #         X(q2)
+    # """
 
 
     # initial_status = [x]
@@ -136,6 +139,7 @@ def execute_compiler():
     #     T(q1)
     # """
     parsed_input = quantum_parser.parse(quantum_code)
+    print "PARSED: ", parsed_input
     print parsed_input
 
     program_interpreter.Quantum_Interpreter(initial_status, associations, parsed_input, if_associations)
