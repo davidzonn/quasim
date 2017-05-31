@@ -21,8 +21,14 @@ def t_QUBITEXPRESSION(t):
     t.value = int(t.value[1]) - 1 #Remove the q for the program, standarize by removing one.
     return t
 
+
+def t_MULTILINE_COMMENT(t):
+    r'\*\/(.|\n)*?\/\*' #no return, it gets ignored, higher priority than single line comments
+
+
 def t_COMMENT(t):
     r'\/\/.*' #no return, it gets ignored
+
 
 def t_newline(t):
     r'\n+' #maybe use new line for end of statement instead of ;"?"

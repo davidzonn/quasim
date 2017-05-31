@@ -98,11 +98,25 @@ def execute_compiler():
 
     quantum_code = """
         H(q2);
-        CNot(q2, q3);
-        CNot(q1, q2);
+        */ 
+        
+        SOME CODE WITHIN MY COMMENTS:
+        /* 
+        
+        CNot(q2, q3); */ and some weird /*
+        */commends in 
+            random
+            H(q1);
+            places /*
+        
+        CNot(q1, */even inbetween commands /* q2);
+        
         H(q1);
+        */
         if q1 then
             if q2 then skip else X(q3)
+        /*
+        H(q1)
     """
 
     # quantum_code = """

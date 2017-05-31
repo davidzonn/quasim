@@ -8,7 +8,7 @@ from lexical_analyser import tokens
 
 
 def p_error(p):
-    print("Syntax error in input!")
+    print("Syntax error in input!") #Could maybe be a bit more... descriptive?
 
 
 def p_command_skip (p):
