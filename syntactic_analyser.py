@@ -33,11 +33,12 @@ def p_command_gate (p):
     '''
     p[0] = AST(p[1] , *p[3])
 
-def p_command_if (p):
+def p_command_ifthenelse (p):
     '''
         command : IF QUBITEXPRESSION THEN command ELSE command
     '''
     p[0] = AST(p[1], p[2], p[4], p[6])
+
 
 def p_args_single (p):
     '''

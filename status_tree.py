@@ -50,8 +50,8 @@ class Quantum_Status:
                 new_element = self.associations[gate][previous_element]
             except Exception:
                 new_element = unknown_node # "Unknown" node if it gate or qubit association not in mapping
-            if new_element == nought:
-                new_children = previous_children[:qubit1] + previous_children[qubit1 + 1:]
+            if new_element == measured:
+                return Integer(0)
             else:
                 new_children = previous_children[:qubit1] + (new_element,) + previous_children[qubit1 + 1:]
             return tensor_product(*new_children)

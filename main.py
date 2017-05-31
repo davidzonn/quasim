@@ -94,7 +94,7 @@ def execute_compiler():
 
     # initial_status = [x, z, z]
 
-    initial_status = [(i+z)/2, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
+    initial_status = [x, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
 
     quantum_code = """
         H(q2);
