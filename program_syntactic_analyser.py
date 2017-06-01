@@ -1,10 +1,10 @@
 #input: Tokens. Output: Tree A.K.A Parser
 
 import ply.yacc
-import lexical_analyser
+import program_lexical_analyser
 from abstract_syntax_tree import AST
 
-from lexical_analyser import tokens
+from program_lexical_analyser import tokens
 
 
 def p_error(p):
@@ -58,9 +58,10 @@ def p_args_list (p):
     '''
     p[0] = [p[1]] + p[3]
 
-quantum_parser = ply.yacc.yacc()
+
 
 def main():
+    program_parser = ply.yacc.yacc()
 
     quantum_code = """
         H(q2);
@@ -73,7 +74,7 @@ def main():
             if q2 then z(q3) else y(q3)
     """
 
-    parsing_result =  quantum_parser.parse(quantum_code)
+    parsing_result =  program_parser.parse(quantum_code)
     print parsing_result
     #lexical_analyser.lexer.input(quantum_code)
     # while True:

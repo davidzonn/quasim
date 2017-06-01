@@ -45,10 +45,10 @@ def t_error(t):
 
 
 
-lexer = ply.lex.lex()
 
 
 def main():
+    lexer = ply.lex.lex()
 
     quantum_code = """
         H(q2); //End of line comment

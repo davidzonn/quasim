@@ -1,16 +1,24 @@
 # gotessman knill algorithm
 #http://docs.sympy.org/dev/tutorial/manipulation.html
 #H, CNOT, because they transform Pauli operators into other Pauli operators, are Clifford
-import random
-import program_interpreter
-import abstract_quantum
+import ply.lex
+import ply.yacc
 import sympy
-from itertools import chain
-import constants
-from constants import sqrt2
-from syntactic_analyser import quantum_parser
 
-# Declaraion of valid status (exc. mixed)
+import constants
+import program_lexical_analyser
+import program_syntactic_analyser
+import program_interpreter
+import status_parser.status_lexical_analyser as status_lexical_analyser
+import status_parser.status_syntactic_analyser as status_syntactic_analyser
+from constants import sqrt2
+
+# from status_syntactic_analyser import status_parser
+# from program_syntactic_analyser import program_parser
+# from status_lexical_analyser import lexer as status_lexer
+# from program_lexical_analyser import lexer as program_lexer
+
+# Declaration of valid status (exc. mixed)
 x = sympy.Symbol('X')
 y = sympy.Symbol('Y')
 z = sympy.Symbol('Z')
@@ -94,7 +102,13 @@ def execute_compiler():
 
     # initial_status = [x, z, z]
 
-    initial_status = [x, (i + z)/2, (i + z)/2] #CREATE BNF OF STATUS AND ADD TO COMPILER / SEPARATE COMPILER?
+    initial_status = [x, (i + z)/2, (i + z)/2]
+    print initial_status
+
+
+    unparsed_initial_status = """
+        {X, (I + Z)/2, (I+Z)/2}
+    """
 
     quantum_code = """
         H(q2);
@@ -110,7 +124,7 @@ def execute_compiler():
             places /*
         
         CNot(q1, */even inbetween commands /* q2);
-        
+        //By the way, line commends should also be ignored
         H(q1);
         */
         if q1 then
@@ -118,6 +132,7 @@ def execute_compiler():
         /*
         H(q1)
     """
+
 
     # quantum_code = """
     #     if q1 then
@@ -152,11 +167,20 @@ def execute_compiler():
     # quantum_code = """
     #     T(q1)
     # """
-    parsed_input = quantum_parser.parse(quantum_code)
-    print "PARSED: ", parsed_input
-    print parsed_input
 
-    program_interpreter.Quantum_Interpreter(initial_status, associations, parsed_input, if_associations)
+    program_lexer = ply.lex.lex(module=program_lexical_analyser)
+    program_parser = ply.yacc.yacc(module=program_syntactic_analyser,outputdir="program_parser.out",)
+
+    status_lexer = ply.lex.lex(module=status_lexical_analyser)
+    status_parser = ply.yacc.yacc(module=status_syntactic_analyser, outputdir="status_parser")
+
+    parsed_initial_status = status_parser.parse(unparsed_initial_status, lexer=status_lexer)
+    print parsed_initial_status
+
+    parsed_program = program_parser.parse(quantum_code, program_lexer)
+    print parsed_program
+
+    program_interpreter.Quantum_Interpreter(parsed_initial_status, associations, parsed_program, if_associations)
 
 
 # def execute_random_program():
@@ -186,7 +210,7 @@ def execute_compiler():
 #     abstract_quantum.execute(initial_status, associations, quantum_program)
 
 def main():
-
+    pass
     # execute_parsed_program()
     execute_compiler()
     # execute_random_program()

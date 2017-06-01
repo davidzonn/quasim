@@ -3,7 +3,7 @@ from sympy import *
 from collections import Sequence
 from status_interpreter import normalize
 from constants import *
-from lexical_analyser import tokens
+from program_lexical_analyser import tokens
 
 
 

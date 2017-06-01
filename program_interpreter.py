@@ -5,7 +5,7 @@ from status_interpreter import normalize
 from collections import Sequence
 from status_interpreter import normalize
 from constants import *
-from lexical_analyser import tokens
+from program_lexical_analyser import tokens
 
 class Quantum_Interpreter:
 
@@ -57,7 +57,7 @@ class Quantum_Interpreter:
 
             else:
                 print "WARNING: Unknown function " + function_to_apply + ". Skipping. " \
-                      + "Try with " + str([x for x in self.associations])
+                      + "Try with " + str([x for x in self.status.associations])
                 new_status = status
 
             new_status = normalize(new_status)
