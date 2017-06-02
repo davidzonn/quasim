@@ -1,3 +1,4 @@
+
 class AST:
 
     def __init__(self, name, *children):

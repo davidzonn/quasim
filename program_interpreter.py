@@ -1,11 +1,9 @@
-from status_tree import Quantum_Status
 from sympy import Symbol
-import sympy
-from status_interpreter import normalize
-from collections import Sequence
-from status_interpreter import normalize
+
 from constants import *
-from program_lexical_analyser import tokens
+from status_interpreter import normalize
+from status_tree import Quantum_Status
+
 
 class Quantum_Interpreter:
 

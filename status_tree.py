@@ -1,11 +1,13 @@
-import sympy
 from sympy import *
 from collections import Sequence
 from status_interpreter import normalize
 from constants import *
-from program_lexical_analyser import tokens
+from collections import Sequence
 
+from sympy import *
 
+from constants import *
+from status_interpreter import normalize
 
 
 class Quantum_Status:
@@ -41,7 +43,7 @@ class Quantum_Status:
             print "Malformed Status. Expected (Gate, q1[, q2])* or (quantum_if, measurement_basis, qubit_to_measure, if_block, else_block). Received: ", step
         pass
 
-    #Traverse recursively the tree Assumes tree is "normalized"
+    #Traverse recursively the tree. Assumes tree is "normalized"
     def apply_one_qubit_operator(self, gate, status_tree, qubit1):
         if isinstance(status_tree, tensor_product):
             previous_children = status_tree.args
@@ -60,20 +62,6 @@ class Quantum_Status:
         else:
             return status_tree # it was an end Symbol (ex, a number)
 
-
-        # # print "Tree representation: ", srepr(status_before), " String Representation", status_before
-        # default_symbol = sympy.Symbol("Unknown")
-        #
-        # if isinstance(status_before, Symbol):  # Is symbol leaf
-        #     status_after = gate_associations.setdefault(status_before,
-        #                                                 default_symbol)  # If the root is a symbol, apply operator
-        # elif not status_before.args:  # No children, is leaf
-        #     status_after = status_before
-        # else:
-        #     new_arguments = [calculate_one_qubit_evolution(gate_associations, x) for x in
-        #                      status_before.args]  # Recursively apply to all children.
-        #     status_after = status_before.func(*new_arguments)
-        # return status_after
 
     #Traverse recursively the tree
     def apply_two_qubit_operator(self, gate, status_tree, qubit1, qubit2):
