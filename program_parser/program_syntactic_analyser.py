@@ -66,12 +66,12 @@ def main():
     quantum_code = """
         H(q2);
         CNot(q2, q3);
-        Cnot(q1, q2);
+        CNot(q1, q2);
         H(q1);
         if q1 then
-            if q1 then skip else x(q3)
+            if q1 then skip else X(q3)
         else
-            if q2 then z(q3) else y(q3)
+            if q2 then Z(q3) else Y(q3)
     """
 
     parsing_result =  program_parser.parse(quantum_code)

@@ -10,8 +10,8 @@ class Quantum_Interpreter:
     bold = "\033[1m"
     end_bold = "\033[0;0m"
 
-    def __init__(self, initial_status, associations, program, if_associations):
-        self.status = Quantum_Status(initial_status, associations, if_associations)
+    def __init__(self, initial_status, associations, program):
+        self.status = Quantum_Status(initial_status, associations)
         print Quantum_Interpreter.bold, "(Initial Status):", Quantum_Interpreter.end_bold, self.status
         self.status.status = self.execute(program, self.status.status)
 
@@ -54,7 +54,7 @@ class Quantum_Interpreter:
                     new_status = self.status.apply_two_qubit_operator(gate, status, args[0], args[1])
 
             else:
-                print "WARNING: Unknown function " + function_to_apply + ". Skipping. " \
+                print "WARNING: Unknown function \"" + function_to_apply + "\". Skipping. " \
                       + "Try with " + str([x for x in self.status.associations])
                 new_status = status
 

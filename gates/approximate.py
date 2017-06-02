@@ -1,12 +1,14 @@
-import constants
+import project.constants
 import sympy
 
 # Declaration of valid status (exc. mixed)
 x = sympy.Symbol('X')
-y = sympy.Symbol('Y')
 z = sympy.Symbol('Z')
+y = sympy.Symbol('Y')
 i = sympy.Symbol('I')
-skip = sympy.Symbol("Skip")
+
+top = sympy.Symbol("top")
+bottom = sympy.Symbol("bottom")
 
 # Declaration of valid gates
 h = sympy.Symbol('H')
@@ -16,34 +18,45 @@ cnot = sympy.Symbol('CNot')
 # The quantum abstract domain associations
 associations = {
     t: {
-        x: (x + y) / constants.sqrt2,
-        y: (y - x) / constants.sqrt2,
+        x: bottom,
+        y: bottom,
         z: z,
-        i: i
+        i: i,
+        bottom: bottom,
+        top: top
     },
     h: {
         x: z,
         y: -y,
         z: x,
-        i: i
+        i: i,
+        bottom: bottom,
+        top: top
     },
     x: {
         x: x,
         y: -y,
         z: -z,
-        i: i
+        i: i,
+        bottom: bottom,
+        top: top
+
     },
     y: {
         x: -x,
         y: y,
         z: -z,
-        i: i
+        i: i,
+        bottom: bottom,
+        top: top
     },
     z: {
         x: -x,
         y: -y,
         z: z,
-        i: i
+        i: i,
+        bottom: bottom,
+        top: top
     },
     cnot: {
         (x, x): (x, i),
@@ -62,20 +75,26 @@ associations = {
         (y, i): (y, x),
         (z, i): (z, i),
         (i, i): (i, i),
-    }
-}
-
-if_associations = {
+        (bottom, bottom): (bottom, bottom),
+        (bottom, top): (bottom, top),
+        (top, bottom): (top, bottom),
+        (top, top): (top, top),
+        (i, i): (i, i)
+    },
     True: {
         i: (i + z)/2,
-        x: constants.measured,
-        y: constants.measured,
-        z: (i + z)/2
+        x: project.constants.measured,
+        y: project.constants.measured,
+        z: (i + z)/2,
+        bottom: bottom,
+        top: top
     },
     False: {
         i: (i - z)/2,
-        x: constants.measured,
-        y: constants.measured,
-        z: (z - i)/2
+        x: project.constants.measured,
+        y: project.constants.measured,
+        z: (z - i)/2,
+        bottom: bottom,
+        top: top
     }
 }

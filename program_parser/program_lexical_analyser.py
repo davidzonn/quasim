@@ -51,15 +51,14 @@ def main():
     lexer = ply.lex.lex()
 
     quantum_code = """
-        H(q2); //End of line comment
-        Cnot(q2, q3);
-        Cnot(q1, q2);
-        H(q1)
-        if (q1) then
-            if (q1) then skip else x(q3)
+        H(q2);
+        CNot(q2, q3);
+        CNot(q1, q2);
+        H(q1);
+        if q1 then
+            if q1 then skip else X(q3)
         else
-            if (q2) then z(q3) else y(q3)
-
+            if q2 then Z(q3) else Y(q3)
     """
 
     lexer.input(quantum_code)

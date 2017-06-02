@@ -12,11 +12,10 @@ from status_interpreter import normalize
 
 class Quantum_Status:
 
-    def __init__(self, status_array, associations, if_associations):
+    def __init__(self, status_array, associations):
         self.associations = associations
         self.status = self.fuse_qubits(status_array)
         self.status = normalize(self.status)
-        self.associations.update(if_associations)
 
     def fuse_qubits(self, status_array):
         status = tensor_product(*status_array)

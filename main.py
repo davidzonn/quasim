@@ -3,16 +3,15 @@
 #H, CNOT, because they transform Pauli operators into other Pauli operators, are Clifford
 import ply.lex
 import ply.yacc
-import sympy
 
-import constants
-from project.program_parser import program_lexical_analyser
-import program_parser.program_syntactic_analyser as program_syntactic_analyser
 import program_interpreter
+import program_parser.program_syntactic_analyser as program_syntactic_analyser
 import status_parser.status_lexical_analyser as status_lexical_analyser
 import status_parser.status_syntactic_analyser as status_syntactic_analyser
-from constants import sqrt2
-from gates import *
+# from project.gates.exact import *
+from project.gates.approximate import *
+from project.program_parser import program_lexical_analyser
+
 
 def execute_compiler():
 
@@ -21,24 +20,24 @@ def execute_compiler():
         {X, (I + Z)/2, (I+Z)/2}
     """
 
-    unparsed_quantum_code = """
-        H(q2);
-        */ 
-        
-        SOME CODE WITHIN MY COMMENTS:
-        /* 
-        
-        CNot(q2, q3); */ and some weird /*
-        */commends in 
-            random
-            H(q1);
-            places /*
-        
-        CNot(q1, */even inbetween commands /* q2);
-        //By the way, line commends should also be ignored
-        H(q1);
-        H(q1)
-    """
+    # unparsed_quantum_code = """
+    #     H(q2);
+    #     */
+    #
+    #     SOME CODE WITHIN MY COMMENTS:
+    #     /*
+    #
+    #     CNot(q2, q3); */ and some weird /*
+    #     */commends in
+    #         random
+    #         H(q1);
+    #         places /*
+    #
+    #     CNot(q1, */even inbetween commands /* q2);
+    #     //By the way, line commends should also be ignored
+    #     H(q1);
+    #     H(q1)
+    # """
 
 
     # unparsed_quantum_code = """
@@ -75,6 +74,17 @@ def execute_compiler():
     #     T(q1)
     # """
 
+    unparsed_quantum_code = """
+        H(q2);
+        CNot(q2, q3);
+        CNot(q1, q2);
+        H(q1);
+        if q1 then
+            if q1 then skip else X(q3)
+        else
+            if q2 then Z(q3) else Y(q3)
+    """
+
     program_lexer = ply.lex.lex(module=program_lexical_analyser)
     program_parser = ply.yacc.yacc(module=program_syntactic_analyser)
 
@@ -87,7 +97,7 @@ def execute_compiler():
     parsed_program = program_parser.parse(unparsed_quantum_code, program_lexer)
     print parsed_program
 
-    program_interpreter.Quantum_Interpreter(parsed_initial_status, associations, parsed_program, if_associations)
+    program_interpreter.Quantum_Interpreter(parsed_initial_status, associations, parsed_program)
 
 
 # def execute_random_program():
