@@ -1,6 +1,8 @@
 ##TODO##, semantic analyser
 import sympy as sympy
-import constants
+
+from gates import constants
+
 
 ##returns a flag indicating if any modification was made and the modified tree.
 def apply_transformation(tree):

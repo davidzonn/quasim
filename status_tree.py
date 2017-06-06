@@ -1,12 +1,8 @@
-from sympy import *
-from collections import Sequence
-from status_interpreter import normalize
-from constants import *
 from collections import Sequence
 
 from sympy import *
 
-from constants import *
+from gates.constants import *
 from status_interpreter import normalize
 
 

@@ -2,7 +2,7 @@
 
 import ply.yacc
 import program_lexical_analyser
-from project.abstract_syntax_tree import AST
+from abstract_syntax_tree import AST
 
 from program_lexical_analyser import tokens
 

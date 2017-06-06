@@ -1,4 +1,4 @@
-import project.constants
+from constants import *
 import sympy
 
 # Declaration of valid status (exc. mixed)
@@ -83,16 +83,16 @@ associations = {
     },
     True: {
         i: (i + z)/2,
-        x: project.constants.measured,
-        y: project.constants.measured,
+        x: measured,
+        y: measured,
         z: (i + z)/2,
         bottom: bottom,
         top: top
     },
     False: {
         i: (i - z)/2,
-        x: project.constants.measured,
-        y: project.constants.measured,
+        x: measured,
+        y: measured,
         z: (z - i)/2,
         bottom: bottom,
         top: top

@@ -1,6 +1,6 @@
 from sympy import Symbol
 
-from constants import *
+from gates.constants import *
 from status_interpreter import normalize
 from status_tree import Quantum_Status
 

@@ -1,6 +1,8 @@
 # gotessman knill algorithm
 #http://docs.sympy.org/dev/tutorial/manipulation.html
 #H, CNOT, because they transform Pauli operators into other Pauli operators, are Clifford
+import sys
+
 import ply.lex
 import ply.yacc
 
@@ -9,8 +11,9 @@ import program_parser.program_syntactic_analyser as program_syntactic_analyser
 import status_parser.status_lexical_analyser as status_lexical_analyser
 import status_parser.status_syntactic_analyser as status_syntactic_analyser
 # from project.gates.exact import *
-from project.gates.approximate import *
-from project.program_parser import program_lexical_analyser
+from gates.approximate import *
+from program_parser import program_lexical_analyser
+from execution import execute
 
 
 def execute_compiler():
@@ -127,10 +130,26 @@ def execute_compiler():
 #     abstract_quantum.execute(initial_status, associations, quantum_program)
 
 def main():
-    pass
     # execute_parsed_program()
-    execute_compiler()
+    # execute_compiler()
     # execute_random_program()
+
+    arguments = sys.argv
+    try:
+        program = arguments[1]
+        with open(program) as file:
+            quantum_program = file.read()
+
+        status_file_names = arguments [2:]
+        for status_file_name in status_file_names:
+            with open(status_file_name) as status_file:
+                # print status_file_name
+                status = status_file.read()
+                execute(quantum_program, status, associations)
+                # print quantum_program, status
+    except Exception as e:
+        # print quantum_program, "\n", status
+        print "pass the program as the first argument, the status[es] as the remaining argument[s]\n" , e
 
 if __name__ == "__main__":
     main()
