@@ -15,9 +15,9 @@ def execute (program_string, status_string, associations):
     status_parser = ply.yacc.yacc(module=status_syntactic_analyser)
 
     parsed_initial_status = status_parser.parse(status_string, lexer=status_lexer)
-    print parsed_initial_status
+    # print parsed_initial_status
 
     parsed_program = program_parser.parse(program_string, program_lexer)
-    print parsed_program
+    # print parsed_program
 
     program_interpreter.Quantum_Interpreter(parsed_initial_status, associations, parsed_program)

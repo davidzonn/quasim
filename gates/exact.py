@@ -1,6 +1,6 @@
 import sympy
 
-import project.gates.constants
+import constants
 
 # Declaration of valid status (exc. mixed)
 x = sympy.Symbol('X')
@@ -16,8 +16,8 @@ cnot = sympy.Symbol('CNot')
 # The quantum abstract domain associations
 associations = {
     t: {
-        x: (x + y) / project.gates.constants.sqrt2,
-        y: (y - x) / project.gates.constants.sqrt2,
+        x: (x + y) / constants.sqrt2,
+        y: (y - x) / constants.sqrt2,
         z: z,
         i: i
     },
@@ -65,14 +65,14 @@ associations = {
     },
     True: {
         i: (i + z)/2,
-        x: project.gates.constants.measured,
-        y: project.gates.constants.measured,
+        x: constants.measured,
+        y: constants.measured,
         z: (i + z)/2
     },
     False: {
         i: (i - z)/2,
-        x: project.gates.constants.measured,
-        y: project.gates.constants.measured,
+        x: constants.measured,
+        y: constants.measured,
         z: (z - i)/2
     }
 }

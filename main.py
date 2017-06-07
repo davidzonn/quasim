@@ -6,12 +6,14 @@ import sys
 import ply.lex
 import ply.yacc
 
+import argparse
+
 import program_interpreter
 import program_parser.program_syntactic_analyser as program_syntactic_analyser
 import status_parser.status_lexical_analyser as status_lexical_analyser
 import status_parser.status_syntactic_analyser as status_syntactic_analyser
-# from project.gates.exact import *
-from gates.approximate import *
+from gates.exact import associations as exact_associations
+from gates.approximate import associations as approximate_associations
 from program_parser import program_lexical_analyser
 from execution import execute
 
@@ -100,7 +102,7 @@ def execute_compiler():
     parsed_program = program_parser.parse(unparsed_quantum_code, program_lexer)
     print parsed_program
 
-    program_interpreter.Quantum_Interpreter(parsed_initial_status, associations, parsed_program)
+    program_interpreter.Quantum_Interpreter(parsed_initial_status, approximate_associations, parsed_program)
 
 
 # def execute_random_program():
@@ -134,14 +136,30 @@ def main():
     # execute_compiler()
     # execute_random_program()
 
-    arguments = sys.argv
     try:
-        program = arguments[1]
-        with open(program) as file:
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument('program')
+        parser.add_argument('statuses', nargs = '+')
+
+        associations = exact_associations  # By default use exact associations/gates
+
+        parser.add_argument('-a', '--approximate', action="store_true", help="Use approximate gates.")
+        parser.add_argument('-e', '--exact', action="store_true", help="Use exact gates.")
+
+        args = parser.parse_args()
+
+        if (args.approximate):
+            associations = approximate_associations #Can change default associations/gates
+        if (args.exact):
+            associations = exact_associations #Can change default associations/gates
+
+        with open(args.program) as file:
             quantum_program = file.read()
 
-        status_file_names = arguments [2:]
-        for status_file_name in status_file_names:
+        for status_file_name in args.statuses:
+
+            #it was a file name
             with open(status_file_name) as status_file:
                 # print status_file_name
                 status = status_file.read()
