@@ -136,7 +136,7 @@ def main():
     # execute_compiler()
     # execute_random_program()
 
-    try:
+    # try:
 
         parser = argparse.ArgumentParser()
         parser.add_argument('program')
@@ -165,9 +165,9 @@ def main():
                 status = status_file.read()
                 execute(quantum_program, status, associations)
                 # print quantum_program, status
-    except Exception as e:
-        # print quantum_program, "\n", status
-        print "pass the program as the first argument, the status[es] as the remaining argument[s]\n" , e
+    # except Exception as e:
+    #     # print quantum_program, "\n", status
+    #     print "pass the program as the first argument, the status[es] as the remaining argument[s]\n" , e
 
 if __name__ == "__main__":
     main()

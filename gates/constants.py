@@ -1,7 +1,7 @@
 import sympy
 
 nought = "nought"
-tensor_product = sympy.Function("")
+tensor_product = sympy.Function("Kron")
 unknown_node = sympy.Symbol('UNKNOWN')
 quantum_if = sympy.Symbol('IF')
 measured = sympy.Symbol('0')

@@ -90,6 +90,6 @@ class Quantum_Status:
             recursive_apply = [self.apply_measurement(measurement_base, x, qubit_to_measure, if_instructions, else_instructions) for x in status_tree.args]
             return status_tree.func(*recursive_apply)
 
+
     def __str__(self):
         return str(self.status)# + "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t===TREE(" + srepr(self.status) + "==="
-
