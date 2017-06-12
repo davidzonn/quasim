@@ -6,10 +6,12 @@ from gates.constants import *
 from status_interpreter import normalize
 from status_tree import Quantum_Status
 
+from program_parser.abstract_syntax_tree import AST
+
 
 class Quantum_Interpreter:
 
-    step_number = 0
+    step_number = 1
 
     bold = "\033[1m"
     end_bold = "\033[0;0m"
@@ -17,11 +19,38 @@ class Quantum_Interpreter:
     def __init__(self, initial_status, associations, program):
         self.status = Quantum_Status(initial_status, associations)
 
-        print Quantum_Interpreter.bold, "(Initial Status):", Quantum_Interpreter.end_bold, self.status
-        # tools.print_graph(self.status.status, str(self.step_number) + "("+program.name+")")
-
+        self.generate_status_output("Initial Status", self.status.status)
+        self.generate_program_output(program)
+        self.generate_transformations_output()
 
         self.status.status = self.execute(program, self.status.status)
+
+
+    def generate_transformations_output(self):
+        T1L = AST("Kron", AST("T*"))
+        T1R = AST("Mult", AST("Kron"), AST("Number"))
+
+        pygraphviz_representation = tools.program_to_pygraphviz(T1L)
+        tools.print_graph(pygraphviz_representation, "T1L")
+
+        pygraphviz_representation = tools.program_to_pygraphviz(T1R)
+        tools.print_graph(pygraphviz_representation, "T1R")
+
+
+
+    def generate_program_output(self, program):
+
+        pygraphviz_representation = tools.program_to_pygraphviz(program)
+        tools.print_graph(pygraphviz_representation, "Quantum Program")
+
+
+    def generate_status_output(self, label, sympy_status):
+
+        print Quantum_Interpreter.bold, str(self.step_number) + ": ", label, "->", Quantum_Interpreter.end_bold, sympy_status
+
+        pygraphviz_representation = tools.sympy_to_pygraphviz(sympy_status)
+        tools.print_graph(pygraphviz_representation, str(self.step_number) + "("+label+")")
+        self.step_number = self.step_number + 1
 
 
     #Analyse the AST instruction, according to it evolves the status.
@@ -71,11 +100,7 @@ class Quantum_Interpreter:
 
         # self.status.status = self.status.calculate_new_status(instruction, self.status.status)
 
-        print Quantum_Interpreter.bold, str(self.step_number) + ": ", instruction, "->", Quantum_Interpreter.end_bold, new_status
-
-        pygraphviz_representation = tools.sympy_to_pygraphviz(new_status)
-        tools.print_graph(pygraphviz_representation, str(self.step_number) + "("+instruction.name+")")
-        self.step_number = self.step_number + 1
+        self.generate_status_output(instruction.name + str(instruction.children), new_status)
 
         return new_status
 
