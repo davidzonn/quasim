@@ -17,7 +17,8 @@ t_ignore = ' \t' #Ignore Tab or space
 literals = ['+', '-', '/', '*', ',', ';', '(', ')'] #Returned with no modification
 
 def t_QUBITEXPRESSION(t):
-    r'q\d+' #One 'q' followed by a number.
+    # r'q\d+' #One 'q' followed by a number.
+    r'q[1-9][0-9]*'
     t.value = int(t.value[1]) - 1 #Remove the q for the program, standarize by removing one.
     return t
 

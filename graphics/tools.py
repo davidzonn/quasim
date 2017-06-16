@@ -1,6 +1,8 @@
 import pygraphviz as pg
-from sympy import Pow
 
+
+from sympy import Pow
+# from ...gates import constants
 ## Transforms from sympy into pygraphviz for easier graphical representation.
 def sympy_to_pygraphviz(sympy_tree):
     pg_graph = pg.AGraph(directed=True, strict=False)
@@ -9,18 +11,25 @@ def sympy_to_pygraphviz(sympy_tree):
     return pg_graph
 
 
-
+multiplication_representation = u"\u00D7"
+addition_representation = u"\u002B"
+tensor_product_representation = u"\u2297"
 
 ##Recursively add edges of sympy graph into pygraphviz one.
 
 node_number = 0
 def add_to_graph(pg_graph, node):
 
-    global node_number
+    global node_number, multiplication_representation, addition_representation
 
     u = node_number
     ulabel = node.func.__name__
-
+    if hasattr(node, 'unicode_representation'):
+        ulabel = node.unicode_representation
+    if node.is_Add:
+        ulabel = addition_representation
+    if node.is_Mul:
+        ulabel = multiplication_representation
     #
     # if node.is_Pow: #First child number, second child the exponent.
     #     ulabel = node.func.__name__
@@ -50,6 +59,8 @@ def add_to_graph(pg_graph, node):
             # v = str(child)
 
             vlabel = str(child) #The string representation of the number.
+
+
 
             # ulabel = str(node.func)
             # vlabel = str(child.func)
@@ -90,21 +101,26 @@ def program_to_pygraphviz(quantum_program):
     return add_to_programpgraph(pg_graph, quantum_program)
 
 counter = 0
-
 def add_to_programpgraph(pg_graph, quantum_program):
     global counter
     if hasattr(quantum_program, "name"): #If not leaf
 
+        # u = str(quantum_program)
+        u = counter
+
         ulabel = quantum_program.name
-        u = str(quantum_program)
 
         for child in quantum_program.children:
+
+            counter = counter + 1
+            v = counter
+
             if hasattr(child, "name"):
-                v = str(child)
+                # v = str(child)
                 vlabel = child.name
             else: #Primitive type
-                v = counter
-                counter = counter + 1
+                # v = counter
+                # counter = counter + 1
                 vlabel = str(child)
 
             pg_graph.add_node(u, label=ulabel)

@@ -1,15 +1,20 @@
 from sympy import Symbol
+from sympy import Mul
+from sympy import Add
 
 import graphics.tools as tools
 
 from gates.constants import *
 from status_interpreter import normalize
 from status_tree import Quantum_Status
+from gates.constants import tensor_product
 
 from program_parser.abstract_syntax_tree import AST
 
 
 class Quantum_Interpreter:
+
+    generate_graphical_output = True #Requires dot program
 
     step_number = 1
 
@@ -27,30 +32,71 @@ class Quantum_Interpreter:
 
 
     def generate_transformations_output(self):
-        T1L = AST("Kron", AST("T*"))
-        T1R = AST("Mult", AST("Kron"), AST("Number"))
+        if self.generate_graphical_output:
+            kron = tensor_product.unicode_representation
+            tree = AST("T")
+            tree1 = AST("T1")
+            tree2 = AST("T2")
+            tree3 = AST("T3")
+            tree4 = AST("T4")
+            trees = AST("T*")
+            trees1 = AST("T*1")
+            trees2 = AST("T*2")
+            trees3 = AST("T*3")
+            trees4 = AST("T*4")
+            number = AST("NumExpr")
+            number1 = AST("NumExpr 1")
+            number2 = AST("NumExpr 2")
+            mul = tools.multiplication_representation
+            add = tools.addition_representation
 
-        pygraphviz_representation = tools.program_to_pygraphviz(T1L)
-        tools.print_graph(pygraphviz_representation, "T1L")
+            T1L = AST(kron, trees1, AST(mul, trees2, number, trees3), trees4)
+            T1R = AST(mul, AST(kron, trees1, trees2, trees3, trees4), number) #Mult by Scalar
 
-        pygraphviz_representation = tools.program_to_pygraphviz(T1R)
-        tools.print_graph(pygraphviz_representation, "T1R")
+            T2L = AST(kron, trees1, AST(add, trees2, trees3), trees4)
+            T2R = AST(add, AST(kron, trees1, trees2, trees4), AST(kron, trees1, trees3, trees4)) #Dist. Tensor
+
+            T3L = AST(mul, trees1, AST(add, trees2, trees3), trees4)
+            T3R = AST(add, AST(mul, trees1, trees2, trees4), AST(mul, trees1, trees3, trees4)) #Dist. Mult.
+
+            T4L = AST(add, trees1, AST(mul, trees2, number1), trees3, AST(mul, trees2, number2))
+            T4R = AST(mul, AST(mul, trees1, trees2, trees4), AST(mul, trees1, trees3, trees4)) #Similar terms
+
+            T5L = AST(mul, AST(mul, trees1), trees2)
+            T5R = AST(mul, trees1, trees2)#mult. fusioning
+
+            T6L = AST(add, AST(add, trees1), trees2)
+            T6R = AST(add, trees1, trees2)#add. fusioning
+
+            transformations = {"T1L": T1L,  "T1R": T1R, "T2L": T2L, "T2R": T2R, "T3L": T3L,"T3R": T3R,
+                               "T4L": T4L,"T4R": T4R, "T5L": T5L,"T5R": T5R, "T6L": T6L,"T6R": T6R}
+
+            for key in transformations.keys():
+                name = key
+                program = transformations[key]
+                pygraphviz_representation = tools.program_to_pygraphviz(program)
+                tools.print_graph(pygraphviz_representation, name)
+
+
+            pygraphviz_representation = tools.program_to_pygraphviz(T1R)
+            tools.print_graph(pygraphviz_representation, "T1R")
 
 
 
     def generate_program_output(self, program):
-
-        pygraphviz_representation = tools.program_to_pygraphviz(program)
-        tools.print_graph(pygraphviz_representation, "Quantum Program")
+        if self.generate_graphical_output:
+            pygraphviz_representation = tools.program_to_pygraphviz(program)
+            tools.print_graph(pygraphviz_representation, "Quantum Program")
 
 
     def generate_status_output(self, label, sympy_status):
 
         print Quantum_Interpreter.bold, str(self.step_number) + ": ", label, "->", Quantum_Interpreter.end_bold, sympy_status
 
-        pygraphviz_representation = tools.sympy_to_pygraphviz(sympy_status)
-        tools.print_graph(pygraphviz_representation, str(self.step_number) + "("+label+")")
-        self.step_number = self.step_number + 1
+        if self.generate_graphical_output:
+            pygraphviz_representation = tools.sympy_to_pygraphviz(sympy_status)
+            tools.print_graph(pygraphviz_representation, str(self.step_number) + "("+label+")")
+            self.step_number = self.step_number + 1
 
 
     #Analyse the AST instruction, according to it evolves the status.
@@ -100,7 +146,7 @@ class Quantum_Interpreter:
 
         # self.status.status = self.status.calculate_new_status(instruction, self.status.status)
 
-        self.generate_status_output(instruction.name + str(instruction.children), new_status)
+        self.generate_status_output(str(instruction), new_status)
 
         return new_status
 

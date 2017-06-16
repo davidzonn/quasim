@@ -9,6 +9,7 @@ class AST:
         # return self.name + str(map(str, self.children))
         ans = self.name + "{"
         for i, x in enumerate(self.children):
+            x = x + 1 if isinstance(x, int) else x
             ans += ("," if i else "") + str(x)
         ans += "}"
         return ans

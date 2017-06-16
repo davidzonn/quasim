@@ -2,6 +2,7 @@
 #http://docs.sympy.org/dev/tutorial/manipulation.html
 #H, CNOT, because they transform Pauli operators into other Pauli operators, are Clifford
 import sys
+import subprocess
 
 import ply.lex
 import ply.yacc
