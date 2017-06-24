@@ -1,3 +1,18 @@
+# Copyright 2017 David A. Zonneveld Michel
+# This file is part of Quasim.
+#
+# Quasim is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Quasim is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Foobar.  If not, see <http://www.gnu.org/licenses/>
 from sympy import Symbol
 from sympy import Mul
 from sympy import Add
@@ -14,7 +29,7 @@ from program_parser.abstract_syntax_tree import AST
 
 class Quantum_Interpreter:
 
-    generate_graphical_output = True #Requires dot program
+    generate_graphical_output = False #Requires dot program
 
     step_number = 1
 
@@ -51,7 +66,10 @@ class Quantum_Interpreter:
             add = tools.addition_representation
 
             T1L = AST(kron, trees1, AST(mul, trees2, number, trees3), trees4)
-            T1R = AST(mul, AST(kron, trees1, trees2, trees3, trees4), number) #Mult by Scalar
+            T1R = AST(mul, AST(kron, trees1, AST(mul, trees2, trees3), trees4), number) #Mult by Scalar
+
+            # T2L = AST(kron, trees1, AST(mul, trees2, number, trees3), trees4)
+            # T2R = AST(mul, AST(kron, trees1, trees2, trees3, trees4), number) #Tensor of Mult.
 
             T2L = AST(kron, trees1, AST(add, trees2, trees3), trees4)
             T2R = AST(add, AST(kron, trees1, trees2, trees4), AST(kron, trees1, trees3, trees4)) #Dist. Tensor
@@ -59,14 +77,14 @@ class Quantum_Interpreter:
             T3L = AST(mul, trees1, AST(add, trees2, trees3), trees4)
             T3R = AST(add, AST(mul, trees1, trees2, trees4), AST(mul, trees1, trees3, trees4)) #Dist. Mult.
 
-            T4L = AST(add, trees1, AST(mul, trees2, number1), trees3, AST(mul, trees2, number2))
-            T4R = AST(mul, AST(mul, trees1, trees2, trees4), AST(mul, trees1, trees3, trees4)) #Similar terms
+            T4L = AST(add, trees1, AST(mul, trees2, number1), trees3, AST(mul, trees2, number2), trees4)
+            T4R = AST(add, trees1, AST(mul, trees2, AST(number1.name + " + \n" + number2.name)),trees3, trees4) #Similar terms
 
-            T5L = AST(mul, AST(mul, trees1), trees2)
-            T5R = AST(mul, trees1, trees2)#mult. fusioning
+            T5L = AST(mul, trees1, AST(mul, trees2), trees3)
+            T5R = AST(mul, trees1, trees2, trees3)#mult. fusioning
 
-            T6L = AST(add, AST(add, trees1), trees2)
-            T6R = AST(add, trees1, trees2)#add. fusioning
+            T6L = AST(add, trees1, AST(add, trees2), trees3)
+            T6R = AST(add, trees1, trees2, trees3)#add. fusioning
 
             transformations = {"T1L": T1L,  "T1R": T1R, "T2L": T2L, "T2R": T2R, "T3L": T3L,"T3R": T3R,
                                "T4L": T4L,"T4R": T4R, "T5L": T5L,"T5R": T5R, "T6L": T6L,"T6R": T6R}
